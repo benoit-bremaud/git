@@ -1,0 +1,1 @@
+& C:/Users/bbrem/AppData/Local/Microsoft/WindowsApps/python3.10.exe c:/Users/bbrem/OneDrive/Documents/Laplateforme/Jour08/Job01/main.py
