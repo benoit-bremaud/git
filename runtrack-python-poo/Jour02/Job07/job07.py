@@ -24,6 +24,16 @@ def pts_card(card, score):
             pts += 10
     return pts
 
+def get_play_again(texte):
+    userInput = input(f"{texte} O/N : ").upper()
+    
+    if userInput == "N":
+        return False
+    elif userInput == "O":
+        return True
+    else:
+        return get_play_again(texte)
+
 
 play_again = True
 
@@ -33,6 +43,8 @@ while play_again:
 
     deck = Deck()
     sabot = deck.get_deck()
+    
+    
     player1 = Gamer("Benoit", [], 0)
     # player1.set_name("Benoit")
     bank = Gamer("Bank", [], 0)
@@ -65,7 +77,7 @@ while play_again:
 
     choice = True
     while choice:
-        if input("\nSouhaitez-vous une carte supplémentaire ? O/N : \n") == "O":
+        if get_play_again("Voulez-vous une carte ?"):
             # print(len(sabot))
             card = get_card(sabot)
             player1.set_hand(card)
@@ -79,6 +91,7 @@ while play_again:
                 break
         else:
             choice = False
+
 
     if player1.get_pts() <= 21:
         while bank.get_pts() < 17 and bank.get_pts() < 21:
@@ -103,8 +116,5 @@ while play_again:
         print("Egalité, vous ne perdez pas votre mise !")
     else:
         pass
-
-    if input("Rejouer ? O/N : ") == "N":
-        play_again = False
-    else:
-        pass
+   
+    play_again = get_play_again("Voulez-vous rejouer ?")
