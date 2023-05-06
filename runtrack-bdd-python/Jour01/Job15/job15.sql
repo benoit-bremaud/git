@@ -1,1 +1,0 @@
-SELECT `nom` FROM etudiant ORDER BY `nom` ASC;

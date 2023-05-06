@@ -7,7 +7,7 @@ class Carte:
         self.__valeur = valeur
         self.__couleur = couleur
 
-    def get_carte(self):
+    def get_card(self):
         print(f"{self.__valeur} de {self.__couleur}")
 
 

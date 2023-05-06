@@ -2,33 +2,34 @@ from gamer import *
 from deck import *
 
 
-def get_card(x):
-    x.pop()
-    return x[-1]
+def get_card(sabot):
+    sabot.pop()
+    return sabot[-1]
 
 
-def pts_card(cards, var2):
+def pts_card(card, score):
     pts = 0
-    if cards[0].isalpha():
-        if cards[0] == "A":
-            if int(var2) + 11 > 21:
+    if card[0].isalpha():
+        if card[0] == "A":
+            if int(score) > 11:
                 pts += 1
             else:
                 pts += 11
         else:
             pts += 10
     else:
-        if cards[0] == 1:
-            pts += 10
-        else:
+        if int(card[0]) > 1:
             pts += int(card[0])
+        else:
+            pts += 10
     return pts
 
 
 play_again = True
 
 while play_again:
-    nb_joueur = input("Combien de joueur ? (7 max) : ")
+    # nb_joueur = input("Combien de joueur ? (7 max) : ")
+    print("\n---------NOUVEAU JEU---------\n")
 
     deck = Deck()
     sabot = deck.get_deck()
@@ -38,31 +39,33 @@ while play_again:
     # bank.set_name("Bank")
 
     # print(len(sabot))
-    player1.set_hand(get_card(sabot))
-    score = player1.get_pts()
-    player1.set_pts(pts_card(card, score))
+    card = get_card(sabot) # prendre une carte du sabot
+    player1.set_hand(card) # la donner au joueur
+    score = player1.get_pts() # noter les points de cette carte
+    player1.set_pts(pts_card(card, score)) # ajoute les points à la main du joueur
 
-    # print(len(sabot))
+    card = get_card(sabot) # prendre une carte dans le sabot
+    bank.set_hand(card) # la donner à la banque
+    score = bank.get_pts() # noter els points de cette carte
+    bank.set_pts(pts_card(card, score)) # ajoute les points à la main de la banque
+    print(bank.get_name()) # affiche le nom du joueur 'bank' -> bank
+    print(bank.get_hand()) # affiche la carte
+    print(bank.get_pts(), "points\n") # affiche les points en cours
 
-    bank.set_hand(get_card(sabot))
-    score = bank.get_pts()
-    bank.set_pts(pts_card(card, score))
-    print(bank.get_name())
-    print(bank.get_hand(), "\n")
-    # bank.get_all_info()
-
-    # print(len(sabot))
-    player1.set_hand(get_card(sabot))
+    card = get_card(sabot)
+    player1.set_hand(card)
     score = player1.get_pts()
     player1.set_pts(pts_card(card, score))
     print(player1.get_name())
     print(player1.get_hand())
-    print(player1.get_pts(), "\n")
-    # player1.get_all_info()
+    score = player1.get_pts()
+    print(score, "points\n")
+    if score == 21:
+        print("Black Jack !!!")
 
     choice = True
     while choice:
-        if input("\nSouhaitez-vous une carte supplémentaire ? O/N : ") == "O":
+        if input("\nSouhaitez-vous une carte supplémentaire ? O/N : \n") == "O":
             # print(len(sabot))
             card = get_card(sabot)
             player1.set_hand(card)
