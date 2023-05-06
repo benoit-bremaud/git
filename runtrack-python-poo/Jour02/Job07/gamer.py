@@ -1,8 +1,8 @@
 class Gamer:
-    def __init__(self, name="Player_1", hand=[], pts=0):
+    def __init__(self, name="player1"):
         self.name = name
-        self.hand = hand
-        self.points = pts
+        self.hand = list()
+        self.points = 0
 
     def get_all_info(self):
         print(f"{self.name} avec les cartes : {self.hand}, totalise {self.points} points !")
