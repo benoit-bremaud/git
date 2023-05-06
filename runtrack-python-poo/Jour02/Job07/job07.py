@@ -11,7 +11,7 @@ def pts_card(card, score):
     pts = 0
     if card[0].isalpha():
         if card[0] == "A":
-            if int(score) > 11:
+            if int(score) >= 11:
                 pts += 1
             else:
                 pts += 11
@@ -45,9 +45,11 @@ while play_again:
     sabot = deck.get_deck()
     
     
-    player1 = Gamer("Benoit", [], 0)
+    player1 = Gamer()
+    player1.set_name("Benoit")
     # player1.set_name("Benoit")
-    bank = Gamer("Bank", [], 0)
+    bank = Gamer()
+    bank.set_name("Bank")
     # bank.set_name("Bank")
 
     # print(len(sabot))
@@ -72,29 +74,25 @@ while play_again:
     print(player1.get_hand())
     score = player1.get_pts()
     print(score, "points\n")
-    if score == 21:
+    if score == 21 and int(len(player1.get_hand())) == 2:
         print("Black Jack !!!")
+        break
 
-    choice = True
-    while choice:
-        if get_play_again("Voulez-vous une carte ?"):
-            # print(len(sabot))
-            card = get_card(sabot)
-            player1.set_hand(card)
-            score = player1.get_pts()
-            player1.set_pts(pts_card(card, score))
-            print(player1.get_name())
-            print(player1.get_hand())
-            print(player1.get_pts(), "\n")
-            # player1.get_all_info()
-            if player1.get_pts() > 21:
-                break
-        else:
-            choice = False
+    while get_play_again("Voulez-vous une carte ?"):
+        # print(len(sabot))
+        card = get_card(sabot)
+        player1.set_hand(card)
+        score = player1.get_pts()
+        player1.set_pts(pts_card(card, score))
+        print(player1.get_name())
+        print(player1.get_hand())
+        print(player1.get_pts(), "\n")
+        if player1.get_pts() > 21:
+            break
 
 
     if player1.get_pts() <= 21:
-        while bank.get_pts() < 17 and bank.get_pts() < 21:
+        while bank.get_pts() <= 17 and bank.get_pts() < 21:
             card = get_card(sabot)
             bank.set_hand(card)
             score = bank.get_pts()
@@ -103,8 +101,7 @@ while play_again:
             print(bank.get_hand())
             print(bank.get_pts(), "\n")
             # bank.get_all_info()
-    else:
-        pass
+
 
     if player1.get_pts() > 21:
         print("Vous avez perdu votre mise !")
@@ -114,7 +111,6 @@ while play_again:
         print("Vous avez perdu votre mise !")
     elif bank.get_pts() == player1.get_pts():
         print("Egalité, vous ne perdez pas votre mise !")
-    else:
-        pass
+
    
     play_again = get_play_again("Voulez-vous rejouer ?")
