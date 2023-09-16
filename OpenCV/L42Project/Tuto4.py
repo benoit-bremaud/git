@@ -49,6 +49,9 @@ lo = np.array([95, 100, 50])
 # Définition des valeurs maximales pour le masque (teinte maximale, saturation maximale, valeur maximale)
 hi = np.array([105, 255, 255])
 
+# 
+color_infos=(0, 255, 255)
+
 """
 Ces lignes définissent les valeurs minimales (lo) et maximales (hi) pour la création du masque HSV. En HSV, la teinte varie de 0 à 179, la saturation de 0 à 255 et la valeur de 0 à 255. Ainsi, ces valeurs indiquent le seuil pour la couleur que vous souhaitez extraire. La teinte est dans l'intervalle [95, 105], la saturation est dans l'intervalle [100, 255] et la valeur est dans l'intervalle [50, 255]. Ces plages peuvent être ajustées en fonction de la couleur que vous souhaitez extraire du frame HSV.
 """
@@ -103,6 +106,7 @@ if __name__ == "__main__":
 
         # Application d'un masque basé sur les valeurs de couleur (lo et hi)
         mask = cv2.inRange(image, lo, hi) # Création d'un masque à partir de l'image HSV en utilisant les valeurs de couleur minimale (lo) et maximale (hi).
+        image = cv2.blur(image, (7,7))
         
         # Réduction du bruit et fermeture des trous dans le masque
         mask = cv2.erode(mask, None, iterations=4) # Cette ligne utilise la fonction cv2.erode() pour réduire le bruit et diminuer la taille des zones blanches dans le masque. L'érosion est un processus qui "érode" les bords des objets blancs (régions à détecter) dans le masque. Elle est souvent utilisée pour réduire le bruit ou pour séparer les objets connectés.
@@ -113,6 +117,42 @@ if __name__ == "__main__":
 
         # Application du masque pour extraire certaines parties du frame original
         image2 = cv2.bitwise_and(frame, frame, mask=mask)
+        
+        # Recherche des contours dans le masque
+        elements = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        # La fonction findContours de OpenCV est utilisée pour détecter les contours dans l'image du masque. 
+        # Elle renvoie une liste de contours trouvés.
+
+        # Vérification s'il y a des contours détectés
+        if len(elements) > 0:
+            # Sélection du contour avec la plus grande aire
+            c = max(elements, key=cv2.contourArea)
+            # La fonction max() est utilisée pour obtenir le contour avec la plus grande aire.
+            # Ici, l'aire du contour est déterminée par cv2.contourArea().
+
+            # Obtention du cercle d'encadrement minimal pour le contour
+            ((x, y), rayon) = cv2.minEnclosingCircle(c)
+            # La fonction minEnclosingCircle() est utilisée pour obtenir le cercle d'encadrement minimal pour un contour donné.
+
+            # Vérification du rayon du cercle minimal
+            if rayon > 30:
+                # Affichage du cercle d'encadrement minimal sur l'image traitée
+                cv2.circle(image2, (int(x), int(y)), int(rayon), color_infos, 2)
+                # La fonction circle() est utilisée pour dessiner un cercle avec le rayon obtenu autour de l'objet détecté.
+                
+                # Affichage d'un point au centre du cercle
+                cv2.circle(frame, (int(x), int(y)), 5, color_infos, 10)
+                # Cela ajoute un point au centre du cercle pour marquer le centre de l'objet détecté.
+                
+                # Dessin d'une ligne du centre du cercle vers l'extérieur
+                cv2.line(frame, (int(x), int(y)), (int(x) + 150, int(y)), color_infos, 2)
+                # Ceci dessine une ligne du centre du cercle vers l'extérieur pour indiquer une direction.
+                
+                # Affichage du texte "Objet !!!" près de l'objet détecté
+                cv2.putText(frame, "Objet !!!", (int(x) + 10, int(y) - 10), cv2.FONT_HERSHEY_DUPLEX, 1, color_infos, 1, cv2.LINE_AA)
+                # La fonction putText() est utilisée pour afficher un texte à proximité de l'objet détecté.
+
+# Ce bloc de code traite les contours détectés, encadre l'objet avec un cercle, marque le centre, trace une ligne et affiche un texte si le rayon du cercle minimal est supérieur à 30.
 
         # Affichage du frame original (en couleurs)
         cv2.imshow('Camera', frame) # Affichage image brute
