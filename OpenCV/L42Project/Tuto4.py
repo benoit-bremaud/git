@@ -103,6 +103,13 @@ if __name__ == "__main__":
 
         # Application d'un masque basé sur les valeurs de couleur (lo et hi)
         mask = cv2.inRange(image, lo, hi) # Création d'un masque à partir de l'image HSV en utilisant les valeurs de couleur minimale (lo) et maximale (hi).
+        
+        # Réduction du bruit et fermeture des trous dans le masque
+        mask = cv2.erode(mask, None, iterations=4) # Cette ligne utilise la fonction cv2.erode() pour réduire le bruit et diminuer la taille des zones blanches dans le masque. L'érosion est un processus qui "érode" les bords des objets blancs (régions à détecter) dans le masque. Elle est souvent utilisée pour réduire le bruit ou pour séparer les objets connectés.
+
+        # Expansion du masque pour combler les zones "trouées"
+        mask = cv2.dilate(mask, None, iterations=4) # Cette ligne utilise la fonction cv2.dilate() pour dilater le masque, c'est-à-dire pour agrandir les zones blanches. Cela peut être utile pour combler les trous dans les objets blancs ou pour regrouper des parties disjointes d'un objet. Dans ce cas, elle est utilisée pour fermer les trous dans le masque et assurer une détection plus complète.
+
 
         # Application du masque pour extraire certaines parties du frame original
         image2 = cv2.bitwise_and(frame, frame, mask=mask)
